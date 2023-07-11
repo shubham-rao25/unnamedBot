@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask-SocketIO Example</title>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            background-color: #e5e5e5;
+        }
+
+        #chat {
+            width: 50%;
+        }
+
+        #chat input {
+            width: 99%;
+        }
+
+        ul {
+            height: 500px;
+            background-color: white;
+            overflow-y: scroll;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        #landing {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+
+        #team-section {
+            margin-top: 50px;
+        }
+
+        .member-container {
+            display: inline-block;
+            width: 200px;
+            margin: 20px;
+        }
+
+        .member-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .member-info {
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+<body>
+<h1>Team 11 - Video Streaming</h1>
+    <div id="team-section">
+        <div class="member-container">
+            <div class="member-image">
+                <img src="image1.jpg" width="100%" height="100%" alt="Member 1">
+            </div>
+            <div class="member-info">
+                <h3>MAMLESH V A</h3>
+                <p>21BIT0101</p>
+                <p>mamlesh.va2021@vitstudent.ac.in</p>
+            </div>
+        </div>
+
+        <div class="member-container">
+            <div class="member-image">
+                <img src="image2.jpg" width="100%" height="100%" alt="Member 2">
+            </div>
+            <div class="member-info">
+                <h3>SAI SHASHANK BEDAMPETA</h3>
+                <p>21BIT0279</p>
+                <p>Email: email2@example.com</p>
+            </div>
+        </div>
+        <div class="member-container">
+            <div class="member-image">
+                <img src="image2.jpg" width="100%" height="100%" alt="Member 2">
+            </div>
+            <div class="member-info">
+                <h3>Name 2</h3>
+                <p>Reg No. 2</p>
+                <p>Email: email2@example.com</p>
+            </div>
+        </div>
+        <div class="member-container">
+            <div class="member-image">
+                <img src="image2.jpg" width="100%" height="100%" alt="Member 2">
+            </div>
+            <div class="member-info">
+                <h3>Name 2</h3>
+                <p>Reg No. 2</p>
+                <p>Email: email2@example.com</p>
+            </div>
+        </div>
+        <div class="member-container">
+            <div class="member-image">
+                <img src="image2.jpg" width="100%" height="100%" alt="Member 2">
+            </div>
+            <div class="member-info">
+                <h3>Name 2</h3>
+                <p>Reg No. 2</p>
+                <p>Email: email2@example.com</p>
+            </div>
+        </div>
+
+        <!-- Add three more member containers with their images and information -->
+
+    </div>
+    <div>
+
+
+
+
+    <div id="landing">
+        <input type="text" id="username" placeholder="Username">
+        <button id="join-btn">JOIN</button>
+    </div>
+
+    <div id="chat" style="display:none;">
+
+        <ul id="chat-messages">
+        </ul>
+        <input type="text" id="message" placeholder="Enter a Message">
+    </div>
+</div>
+
+    <script>
+        const socket = io("http://172.20.10.2:5000",{autoConnect: false});
+
+        document.getElementById("join-btn").addEventListener("click", function() {
+            let username = document.getElementById("username").value;
+
+            socket.connect();
+
+            socket.on("connect", function() {
+                socket.emit("user_join", username);
+            })
+
+            document.getElementById("chat").style.display = "block";
+            document.getElementById("landing").style.display = "none";
+        })
+
+        document.getElementById("message").addEventListener("keyup", function (event) {
+            if (event.key == "Enter") {
+                let message = document.getElementById("message").value;
+                socket.emit("new_message", message);
+                document.getElementById("message").value = "";
+            }
+        })
+
+        socket.on("chat", function(data) {
+            let ul = document.getElementById("chat-messages");
+            let li = document.createElement("li");
+            li.appendChild(document.createTextNode(data["username"] + ": " + data["message"]));
+            ul.appendChild(li);
+            ul.scrolltop = ul.scrollHeight;
+        })
+    </script>
+</body>
+</html>
